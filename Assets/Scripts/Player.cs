@@ -168,6 +168,17 @@ public class Player : MonoBehaviour
     {
         Attack();
         // Play the sound effect when the enemy is defeated
-        audioSource.PlayOneShot(enemyDefeatSound);
+       
+            // Check if the audio clip is assigned
+            if (enemyDefeatSound != null)
+            {
+                // Play the audio clip
+                audioSource.PlayOneShot(enemyDefeatSound);
+            }
+
+            // Other code related to defeating the enemy
+            // ...
+        
+
     }
 }

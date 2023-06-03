@@ -10,9 +10,11 @@ public class HelperCharacter : MonoBehaviour
     public LayerMask playerLayer;
     public LayerMask enemyLayer;
     public GameObject explosionEffectPrefab;
-    public GameObject helperCharacterPrefab;
+ 
     public float spawnRadius = 5f;
-    public int spawnCount = 1;
+    public int spawnCount = 6;
+         private Transform targetPlayer;
+
 
     public int maxLife = 10;
     private int currentLife;
@@ -26,7 +28,7 @@ public class HelperCharacter : MonoBehaviour
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         currentLife = maxLife;
         StartCoroutine(AutoAttack());
-        SpawnHelperCharacters();
+       
     }
 
     void Update()
@@ -36,9 +38,10 @@ public class HelperCharacter : MonoBehaviour
             // HelperCharacter life has run out, destroy it
             DestroyHelperCharacter();
         }
-        else if (!isAttacking)
+        
+         if (targetPlayer != null)
         {
-            MoveTowardsNearestEnemy();
+            transform.position = Vector3.MoveTowards(transform.position, targetPlayer.position, Time.deltaTime * 3f);
         }
     }
 
@@ -131,43 +134,7 @@ public class HelperCharacter : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void SpawnHelperCharacters()
-    {
-        for (int i = 0; i < spawnCount; i++)
-        {
-            // Calculate the spawn position
-            float angle = i * (360f / spawnCount);
-            Vector2 spawnPosition = transform.position + Quaternion.Euler(0f, 0f, angle) * Vector2.up * spawnRadius;
 
-            // Instantiate the HelperCharacter at the spawn position
-            GameObject helperCharacter = Instantiate(helperCharacterPrefab, spawnPosition, Quaternion.identity);
-            HelperCharacter helperCharacterComponent = helperCharacter.GetComponent<HelperCharacter>();
-
-            // Set the target enemy for the spawned HelperCharacter
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-            if (enemies.Length > 0)
-            {
-                GameObject nearestEnemy = null;
-                float shortestDistance = Mathf.Infinity;
-
-                foreach (GameObject enemy in enemies)
-                {
-                    float distance = Vector2.Distance(helperCharacter.transform.position, enemy.transform.position);
-
-                    if (distance < shortestDistance)
-                    {
-                        shortestDistance = distance;
-                        nearestEnemy = enemy;
-                    }
-                }
-
-                if (nearestEnemy != null)
-                {
-                    helperCharacterComponent.SetTargetEnemy(nearestEnemy.transform);
-                }
-            }
-        }
-    }
 
     private void MoveTowardsEnemy()
     {
@@ -178,5 +145,9 @@ public class HelperCharacter : MonoBehaviour
     public void SetTargetEnemy(Transform enemyTransform)
     {
         targetEnemy = enemyTransform;
+    }
+    public void SetTargetPlayer(Transform playerTransform)
+    {
+        targetPlayer = playerTransform;
     }
 }

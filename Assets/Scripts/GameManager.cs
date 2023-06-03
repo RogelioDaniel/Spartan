@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance; // Static reference to the GameManager instance
+    public static GameManager Instance { get; private set; } // Static reference to the GameManager instance
 
     public GameObject enemy;
     public GameObject helperCharacterPrefab; // Prefab of the HelperCharacter
@@ -17,6 +17,10 @@ public class GameManager : MonoBehaviour
     public string restartSceneName = "Game";
     private int score = 0;
     private bool gameStarted = false;
+    private GameObject player;
+    private int waveNumber = 1;
+    public Text waveText;
+    private List<HelperCharacter> helperCharacters = new List<HelperCharacter>();
 
     void Awake()
     {
@@ -32,8 +36,10 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player");
         SpawnHelperCharacters();
+        waveText.text = "Wave " + waveNumber;
+        
     }
 
     void Update()
@@ -54,35 +60,27 @@ public class GameManager : MonoBehaviour
     }
 
 
+
     private void SpawnHelperCharacters()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        int enemyCount = enemies.Length;
-        int helperCharacterCount = 29;
-
-        if (enemyCount == 0)
-        {
-            return; // No enemies to follow, so return
-        }
+        int helperCharacterCount = 9;
 
         for (int i = 0; i < helperCharacterCount; i++)
         {
-            Vector3 spawnPos = spawnPoint.position;
-            spawnPos.x = Random.Range(-maxX, maxX);
+            float angle = i * (360f / helperCharacterCount);
+            Vector3 spawnPosition = player.transform.position + Quaternion.Euler(0f, 0f, angle) * Vector3.up * maxX;
 
-            GameObject helperCharacter = Instantiate(helperCharacterPrefab, spawnPos, Quaternion.identity);
-            HelperCharacter helperCharacterComponent = helperCharacter.GetComponent<HelperCharacter>();
-
-            int enemyIndex = i % enemyCount; // Get the index of the target enemy
-
-            helperCharacterComponent.SetTargetEnemy(enemies[enemyIndex].transform);
+            GameObject helperCharacterObject = Instantiate(helperCharacterPrefab, spawnPosition, Quaternion.identity);
+            HelperCharacter helperCharacterComponent = helperCharacterObject.GetComponent<HelperCharacter>();
+            helperCharacterComponent.SetTargetPlayer(player.transform);
+            helperCharacters.Add(helperCharacterComponent);
         }
     }
 
     private void StartSpawning()
     {
-        InvokeRepeating("SpawnEnemy", 1.5f, spawnRate);
-        Invoke("SpawnHelperCharacters", 2f); // Invoke the method to spawn HelperCharacters after a delay
+        StartCoroutine(SpawnWave());
+        Invoke("SpawnHelperCharacters", 0.1f); // Invoke the method to spawn HelperCharacters after a delay
     }
 
     public void IncreaseScore(int amount)
@@ -108,6 +106,29 @@ public class GameManager : MonoBehaviour
 
             Destroy(enemy);
             eliminatedCount++;
+        }
+    }
+    public void UpdateHelperCharactersTarget()
+    {
+        foreach (HelperCharacter helperCharacter in helperCharacters)
+        {
+            helperCharacter.SetTargetPlayer(player.transform);
+        }
+    }
+    private IEnumerator SpawnWave()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(spawnRate);
+
+            for (int i = 0; i < waveNumber; i++)
+            {
+                SpawnEnemy();
+                yield return new WaitForSeconds(spawnRate);
+            }
+
+            waveNumber++;
+            waveText.text = "Wave " + waveNumber;
         }
     }
 }
