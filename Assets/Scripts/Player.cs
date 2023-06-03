@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int maxLife = 3;
+    public int maxLife = 300;
     private int currentLife;
     public float speed = 5f;
     public float attackRange = 1.5f;
@@ -166,6 +166,7 @@ public class Player : MonoBehaviour
     }
     public void DefeatEnemy()
     {
+        Attack();
         // Play the sound effect when the enemy is defeated
         audioSource.PlayOneShot(enemyDefeatSound);
     }

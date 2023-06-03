@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4020143835120518914}
   - component: {fileID: 4020143835120518919}
   - component: {fileID: 4020143835120518916}
-  - component: {fileID: 4020143835120518918}
+  - component: {fileID: -1660149993338513121}
   m_Layer: 0
   m_Name: Helper Character 1
   m_TagString: HelperCharacter
@@ -99,14 +99,14 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &4020143835120518916
 BoxCollider2D:
@@ -134,7 +134,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.89, y: 2.24}
   m_EdgeRadius: 0
---- !u!114 &4020143835120518918
+--- !u!114 &-1660149993338513121
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f95731b17bc8404a883a5908982ff87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 2
+  movementSpeed: 4
   attackRange: 1.5
   attackCooldown: 1
   playerLayer:
@@ -155,8 +155,8 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  explosionEffectPrefab: {fileID: 0}
-  helperCharacterPrefab: {fileID: 4020143835120518915}
-  spawnRadius: 5
-  spawnCount: 10
-  maxLife: 10
+  explosionEffectPrefab: {fileID: 7334166633761633283, guid: d3e606009f368bc4aa3d381efa5e761b, type: 3}
+  helperCharacterPrefab: {fileID: 0}
+  spawnRadius: 1
+  spawnCount: 2
+  maxLife: 2

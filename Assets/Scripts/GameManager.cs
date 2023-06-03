@@ -48,10 +48,11 @@ public class GameManager : MonoBehaviour
     private void SpawnEnemy()
     {
         Vector3 spawnPos = spawnPoint.position;
-        spawnPos.x = Random.Range(-maxX, maxX);
+        spawnPos.y = spawnPoint.position.y + spawnPoint.localScale.y / 2f;
 
         Instantiate(enemy, spawnPos, Quaternion.identity);
     }
+
 
     private void SpawnHelperCharacters()
     {

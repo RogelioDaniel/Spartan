@@ -12,7 +12,7 @@ public class HelperCharacter : MonoBehaviour
     public GameObject explosionEffectPrefab;
     public GameObject helperCharacterPrefab;
     public float spawnRadius = 5f;
-    public int spawnCount = 26;
+    public int spawnCount = 1;
 
     public int maxLife = 10;
     private int currentLife;
@@ -20,7 +20,6 @@ public class HelperCharacter : MonoBehaviour
     private Transform playerTransform;
     private Transform targetEnemy;
     private bool isAttacking = false;
-    private Rigidbody2D rb;
 
     void Start()
     {
@@ -28,7 +27,6 @@ public class HelperCharacter : MonoBehaviour
         currentLife = maxLife;
         StartCoroutine(AutoAttack());
         SpawnHelperCharacters();
-        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -42,12 +40,6 @@ public class HelperCharacter : MonoBehaviour
         {
             MoveTowardsNearestEnemy();
         }
-    }
-
-    private void FixedUpdate()
-    {
-        // Apply movement using physics in FixedUpdate
-        MoveTowardsEnemy();
     }
 
     private void MoveTowardsNearestEnemy()
@@ -74,7 +66,7 @@ public class HelperCharacter : MonoBehaviour
             {
                 targetEnemy = nearestEnemy.transform;
                 Vector2 direction = targetEnemy.position - transform.position;
-                rb.velocity = direction.normalized * movementSpeed;
+                transform.Translate(direction.normalized * movementSpeed * Time.deltaTime);
             }
         }
     }
@@ -114,11 +106,6 @@ public class HelperCharacter : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             TakeDamage();
-        }
-        else if (collision.gameObject.CompareTag("HelperCharacter"))
-        {
-            // HelperCharacter collided with another HelperCharacter
-            // Implement the desired behavior here
         }
     }
 
@@ -184,15 +171,8 @@ public class HelperCharacter : MonoBehaviour
 
     private void MoveTowardsEnemy()
     {
-        if (targetEnemy != null)
-        {
-            Vector2 direction = targetEnemy.position - transform.position;
-            rb.velocity = direction.normalized * movementSpeed;
-        }
-        else
-        {
-            rb.velocity = Vector2.zero;
-        }
+        Vector2 direction = targetEnemy.position - transform.position;
+        transform.Translate(direction.normalized * movementSpeed * Time.deltaTime);
     }
 
     public void SetTargetEnemy(Transform enemyTransform)

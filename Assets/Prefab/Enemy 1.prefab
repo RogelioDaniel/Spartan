@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3507040287025824443}
   - component: {fileID: 3507040287025824440}
   - component: {fileID: 3507040287025824436}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy 1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  m_UseAutoMass: 1
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
@@ -132,7 +132,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &3507040287025824436
 MonoBehaviour:
@@ -152,4 +152,4 @@ MonoBehaviour:
   restartSceneName: Game
   fadeDuration: 1.5
   dropItemPrefab: {fileID: 0}
-  destroyEffectPrefab: {fileID: 0}
+  destroyEffectPrefab: {fileID: 7334166633761633283, guid: d3e606009f368bc4aa3d381efa5e761b, type: 3}

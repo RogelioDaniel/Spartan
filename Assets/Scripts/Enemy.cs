@@ -33,7 +33,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     public void DestroyEnemy()
     {
         // Instantiate the destroy effect at the enemy's position
@@ -51,25 +50,6 @@ public class Enemy : MonoBehaviour
 
         // Destroy the destroy effect prefab after a delay
         Destroy(destroyEffect, 0.5f);
-    }
-
-
-    private IEnumerator FadeOutAndDestroy()
-    {
-        float elapsedTime = 0f;
-        Color startingColor = enemySprite.color;
-        Color transparentColor = new Color(startingColor.r, startingColor.g, startingColor.b, 0f);
-
-        while (elapsedTime < fadeDuration)
-        {
-            float normalizedTime = elapsedTime / fadeDuration;
-            enemySprite.color = Color.Lerp(startingColor, transparentColor, normalizedTime);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Destroy(gameObject);
     }
 
     private void RestartGame()
