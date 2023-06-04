@@ -10,11 +10,10 @@ public class HelperCharacter : MonoBehaviour
     public LayerMask playerLayer;
     public LayerMask enemyLayer;
     public GameObject explosionEffectPrefab;
- 
+
     public float spawnRadius = 5f;
     public int spawnCount = 6;
-         private Transform targetPlayer;
-
+    private Transform targetPlayer;
 
     public int maxLife = 10;
     private int currentLife;
@@ -23,12 +22,13 @@ public class HelperCharacter : MonoBehaviour
     private Transform targetEnemy;
     private bool isAttacking = false;
 
+    public float barrierDistance = 2f; // Distance between the player and the Helper Character while forming the barrier
+
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         currentLife = maxLife;
         StartCoroutine(AutoAttack());
-       
     }
 
     void Update()
@@ -38,10 +38,23 @@ public class HelperCharacter : MonoBehaviour
             // HelperCharacter life has run out, destroy it
             DestroyHelperCharacter();
         }
-        
-         if (targetPlayer != null)
+
+        if (targetPlayer != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPlayer.position, Time.deltaTime * 3f);
+            float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
+
+            if (distanceToPlayer > barrierDistance)
+            {
+                // Move towards the player
+                transform.position = Vector3.MoveTowards(transform.position, targetPlayer.position, movementSpeed * Time.deltaTime);
+            }
+            else
+            {
+                MoveTowardsNearestEnemy();
+                // Stop moving
+                // You can also perform other actions here, such as forming the barrier
+                // ...
+            }
         }
     }
 
@@ -134,8 +147,6 @@ public class HelperCharacter : MonoBehaviour
         Destroy(gameObject);
     }
 
-
-
     private void MoveTowardsEnemy()
     {
         Vector2 direction = targetEnemy.position - transform.position;
@@ -146,6 +157,7 @@ public class HelperCharacter : MonoBehaviour
     {
         targetEnemy = enemyTransform;
     }
+
     public void SetTargetPlayer(Transform playerTransform)
     {
         targetPlayer = playerTransform;

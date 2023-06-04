@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public Transform spawnPoint;
     public float spawnRate;
     public Text scoreText;
-    public string restartSceneName = "Game";
+    public string restartSceneName = "Principal";
     private int score = 0;
     private bool gameStarted = false;
     private GameObject player;
