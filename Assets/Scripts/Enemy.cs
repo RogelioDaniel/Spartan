@@ -10,9 +10,10 @@ public class Enemy : MonoBehaviour
     public SpriteRenderer enemySprite;
     public string restartSceneName = "Game";
     public float fadeDuration = 1.5f;
-    public GameObject dropItemPrefab; //
-    public GameObject destroyEffectPrefab; //
+    public GameObject itemPrefab;
 
+    public GameObject destroyEffectPrefab; //
+    public float attackRangeItemDropRate = 100f;
     private Rigidbody2D rb;
 
     private void Start()
@@ -39,11 +40,14 @@ public class Enemy : MonoBehaviour
         GameObject destroyEffect = Instantiate(destroyEffectPrefab, transform.position, Quaternion.identity);
 
         // Check if the enemy should drop an item
-        if (dropItemPrefab != null)
+        if (Random.value <= attackRangeItemDropRate)
         {
-            // Instantiate the item at the enemy's position
-            Instantiate(dropItemPrefab, transform.position, Quaternion.identity);
+            SpawnAttackRangeItem();
         }
+
+        // Instantiate the item prefab
+        Instantiate(itemPrefab, transform.position, Quaternion.identity);
+
 
         // Destroy the enemy game object
         Destroy(gameObject);
@@ -55,5 +59,13 @@ public class Enemy : MonoBehaviour
     private void RestartGame()
     {
         SceneManager.LoadScene(restartSceneName);
+    }
+
+
+
+    private void SpawnAttackRangeItem()
+    {
+        Vector3 spawnPosition = transform.position;
+        Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
     }
 }

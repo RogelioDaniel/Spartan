@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
     private AudioSource audioSource; // Reference to the AudioSource component
 
     private Rigidbody2D rb;
+    private bool isAttackRangeIncreased = false;
+    private float originalAttackRange;
+    private Coroutine attackRangeCoroutine;
 
     private void Start()
     {
@@ -47,7 +50,7 @@ public class Player : MonoBehaviour
         if (joystickController.joystickVec.y != 0)
         {
             rb.velocity = new Vector2(joystickController.joystickVec.x * speed, joystickController.joystickVec.y * speed);
-            RotatePlayerTowardsNearestEnemy();
+           
         }
         else
         {
@@ -111,7 +114,37 @@ public class Player : MonoBehaviour
             }
         }
     }
+    public void IncreaseAttackRange(float amount, float duration)
+    {
+        if (isAttackRangeIncreased)
+        {
+            StopCoroutine(attackRangeCoroutine);
+            isAttackRangeIncreased = false;
+            ResetAttackRange();
+        }
 
+        attackRangeCoroutine = StartCoroutine(IncreaseAttackRangeCoroutine(amount, duration));
+    }
+
+    private IEnumerator IncreaseAttackRangeCoroutine(float amount, float duration)
+    {
+        isAttackRangeIncreased = true;
+        originalAttackRange = attackRange;
+
+        attackRange += amount;
+
+        yield return new WaitForSeconds(duration);
+
+        isAttackRangeIncreased = false;
+        ResetAttackRange();
+    }
+
+    private void ResetAttackRange()
+    {
+        attackRange = originalAttackRange;
+    }
+
+        
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))

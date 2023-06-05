@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject enemy;
     public GameObject helperCharacterPrefab; // Prefab of the HelperCharacter
+    public GameObject itemPrefab; // Prefab of the item
     public float maxX;
     public Transform spawnPoint;
     public float spawnRate;
@@ -21,6 +22,9 @@ public class GameManager : MonoBehaviour
     private int waveNumber = 1;
     public Text waveText;
     private List<HelperCharacter> helperCharacters = new List<HelperCharacter>();
+
+    private int enemiesDestroyed = 0;
+    public int enemiesPerItem = 100; // Number of enemies to destroy before spawning an item
 
     void Awake()
     {
@@ -39,7 +43,6 @@ public class GameManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         SpawnHelperCharacters();
         waveText.text = "Wave " + waveNumber;
-        
     }
 
     void Update()
@@ -53,13 +56,23 @@ public class GameManager : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        Vector3 spawnPos = spawnPoint.position;
-        spawnPos.y = spawnPoint.position.y + spawnPoint.localScale.y / 2f;
-
+        Vector3 spawnPos = GetRandomSpawnPosition();
         Instantiate(enemy, spawnPos, Quaternion.identity);
     }
 
+    private Vector3 GetRandomSpawnPosition()
+    {
+        float spawnX = Random.Range(-maxX, maxX);
+        float spawnY = spawnPoint.position.y + spawnPoint.localScale.y / 2f;
 
+        return new Vector3(spawnX, spawnY, 0f);
+    }
+
+    private void SpawnItem()
+    {
+        Vector3 spawnPos = GetRandomSpawnPosition();
+        Instantiate(itemPrefab, spawnPos, Quaternion.identity);
+    }
 
     private void SpawnHelperCharacters()
     {
@@ -87,6 +100,13 @@ public class GameManager : MonoBehaviour
     {
         score += amount;
         scoreText.text = "Score: " + score;
+
+        enemiesDestroyed++;
+
+        if (enemiesDestroyed % enemiesPerItem == 0)
+        {
+            SpawnItem();
+        }
     }
 
     public void RestartGame()
@@ -108,6 +128,7 @@ public class GameManager : MonoBehaviour
             eliminatedCount++;
         }
     }
+
     public void UpdateHelperCharactersTarget()
     {
         foreach (HelperCharacter helperCharacter in helperCharacters)
@@ -115,20 +136,36 @@ public class GameManager : MonoBehaviour
             helperCharacter.SetTargetPlayer(player.transform);
         }
     }
+
     private IEnumerator SpawnWave()
     {
+        int initialEnemiesToSpawn = 2; // Number of enemies to spawn in the first wave
+        int enemiesToSpawn = initialEnemiesToSpawn;
+        float spawnRateMultiplier = 1.0f; // Rate at which the spawn rate increases with each wave
+
         while (true)
         {
-            yield return new WaitForSeconds(spawnRate);
+            // Calculate the spawn rate based on the wave number
+            float currentSpawnRate = spawnRate / (waveNumber * spawnRateMultiplier);
 
-            for (int i = 0; i < waveNumber; i++)
+            for (int i = 0; i < enemiesToSpawn; i++)
             {
-                SpawnEnemy();
-                yield return new WaitForSeconds(spawnRate);
+                // Get a random position within the map bounds
+                Vector3 spawnPos = new Vector3(Random.Range(-maxX, maxX), spawnPoint.position.y, spawnPoint.position.z);
+
+                GameObject newEnemy = Instantiate(enemy, spawnPos, Quaternion.identity);
+                newEnemy.SetActive(true);
+
+                yield return new WaitForSeconds(currentSpawnRate);
             }
 
             waveNumber++;
             waveText.text = "Wave " + waveNumber;
+
+            // Increase the number of enemies to spawn in the next wave
+            enemiesToSpawn++;
+
+            yield return new WaitForSeconds(currentSpawnRate);
         }
     }
 }

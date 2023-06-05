@@ -157,7 +157,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &3507040287025824436
 MonoBehaviour:
@@ -171,10 +171,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 579b2d5a5e7f6ec4496e76899e819124, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 3
   target: {fileID: 0}
   enemySprite: {fileID: 3507040287025824442}
   restartSceneName: Game
   fadeDuration: 1.5
-  dropItemPrefab: {fileID: 0}
+  itemPrefab: {fileID: 8500130091829667817, guid: 62fc5c3722a9c734eb6669c6ec4bd934, type: 3}
   destroyEffectPrefab: {fileID: 7334166633761633283, guid: d3e606009f368bc4aa3d381efa5e761b, type: 3}

@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - Ground
   - HelperCharacter
+  - Item
   layers:
   - Default
   - TransparentFX

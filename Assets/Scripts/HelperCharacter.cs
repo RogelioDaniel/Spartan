@@ -21,6 +21,9 @@ public class HelperCharacter : MonoBehaviour
     private Transform playerTransform;
     private Transform targetEnemy;
     private bool isAttacking = false;
+    private bool isAttackRangeIncreased = false;
+    private float originalAttackRange;
+    private Coroutine attackRangeCoroutine;
 
     public float barrierDistance = 2f; // Distance between the player and the Helper Character while forming the barrier
 
@@ -28,7 +31,7 @@ public class HelperCharacter : MonoBehaviour
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         currentLife = maxLife;
-        StartCoroutine(AutoAttack());
+        StartCoroutine(AutoAttack());   
     }
 
     void Update()
@@ -38,24 +41,47 @@ public class HelperCharacter : MonoBehaviour
             // HelperCharacter life has run out, destroy it
             DestroyHelperCharacter();
         }
-
+        
         if (targetPlayer != null)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
 
-            if (distanceToPlayer > barrierDistance)
-            {
-                // Move towards the player
-                transform.position = Vector3.MoveTowards(transform.position, targetPlayer.position, movementSpeed * Time.deltaTime);
-            }
-            else
-            {
-                MoveTowardsNearestEnemy();
-                // Stop moving
-                // You can also perform other actions here, such as forming the barrier
-                // ...
-            }
+
+
+            // Look towards the direction of the joystick
+            MoveTowardsEnemy();
+            MoveTowardsNearestEnemy();
         }
+    }
+
+    public void IncreaseAttackRange(float amount, float duration)
+    {
+        if (isAttackRangeIncreased)
+        {
+            StopCoroutine(attackRangeCoroutine);
+            isAttackRangeIncreased = false;
+            ResetAttackRange();
+        }
+
+        attackRangeCoroutine = StartCoroutine(IncreaseAttackRangeCoroutine(amount, duration));
+    }
+
+    private IEnumerator IncreaseAttackRangeCoroutine(float amount, float duration)
+    {
+        isAttackRangeIncreased = true;
+        originalAttackRange = attackRange;
+
+        attackRange += amount;
+
+        yield return new WaitForSeconds(duration);
+
+        isAttackRangeIncreased = false;
+        ResetAttackRange();
+    }
+
+    private void ResetAttackRange()
+    {
+        attackRange = originalAttackRange;
     }
 
     private void MoveTowardsNearestEnemy()
@@ -106,13 +132,24 @@ public class HelperCharacter : MonoBehaviour
 
     private void Attack()
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
-        foreach (Collider2D enemyCollider in hitEnemies)
+        if (targetEnemy != null)
         {
-            Enemy enemy = enemyCollider.GetComponent<Enemy>();
-            if (enemy != null)
+            Vector2 direction = targetEnemy.position - transform.position;
+            Vector2 forward = transform.up;
+
+            float angle = Vector2.Angle(forward, direction);
+
+            if (angle < 90f) // Only attack if enemy is in front (within 90 degrees)
             {
-                enemy.DestroyEnemy();
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
+                foreach (Collider2D enemyCollider in hitEnemies)
+                {
+                    Enemy enemy = enemyCollider.GetComponent<Enemy>();
+                    if (enemy != null)
+                    {
+                        enemy.DestroyEnemy();
+                    }
+                }
             }
         }
     }
@@ -121,7 +158,15 @@ public class HelperCharacter : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            TakeDamage();
+            Vector2 collisionDirection = collision.transform.position - transform.position;
+            Vector2 forward = transform.up;
+
+            float angle = Vector2.Angle(forward, collisionDirection);
+
+            if (angle > 90f) // Only take damage if hit from behind (greater than 90 degrees)
+            {
+                TakeDamage();
+            }
         }
     }
 
@@ -149,8 +194,11 @@ public class HelperCharacter : MonoBehaviour
 
     private void MoveTowardsEnemy()
     {
-        Vector2 direction = targetEnemy.position - transform.position;
-        transform.Translate(direction.normalized * movementSpeed * Time.deltaTime);
+        if (targetPlayer != null)
+        {
+            Vector2 direction = targetPlayer.position - transform.position;
+            transform.up = direction.normalized;
+        }
     }
 
     public void SetTargetEnemy(Transform enemyTransform)
