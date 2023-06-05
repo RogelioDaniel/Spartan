@@ -200,12 +200,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemy: {fileID: 3507040287025824441, guid: 4fcaa425d8af2c04a930dc0afa302539, type: 3}
   helperCharacterPrefab: {fileID: 4020143835120518915, guid: c218ddf62282bcb4292f191e4fec62ef, type: 3}
+  itemPrefab: {fileID: 8500130091829667817, guid: 62fc5c3722a9c734eb6669c6ec4bd934, type: 3}
   maxX: 9
   spawnPoint: {fileID: 112188984}
-  spawnRate: 2
+  spawnRate: 0.002
   scoreText: {fileID: 1668157957}
-  restartSceneName: Game
+  restartSceneName: Principal
   waveText: {fileID: 958581292}
+  enemiesPerItem: 100
 --- !u!1 &237781167
 GameObject:
   m_ObjectHideFlags: 0

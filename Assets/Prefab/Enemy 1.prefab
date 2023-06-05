@@ -177,4 +177,5 @@ MonoBehaviour:
   restartSceneName: Game
   fadeDuration: 1.5
   itemPrefab: {fileID: 8500130091829667817, guid: 62fc5c3722a9c734eb6669c6ec4bd934, type: 3}
-  destroyEffectPrefab: {fileID: 7334166633761633283, guid: d3e606009f368bc4aa3d381efa5e761b, type: 3}
+  explosionEffectPrefab: {fileID: 7334166633761633283, guid: d3e606009f368bc4aa3d381efa5e761b, type: 3}
+  enemiesPerItemDrop: 100

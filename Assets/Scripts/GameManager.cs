@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
     {
         int initialEnemiesToSpawn = 2; // Number of enemies to spawn in the first wave
         int enemiesToSpawn = initialEnemiesToSpawn;
-        float spawnRateMultiplier = 1.0f; // Rate at which the spawn rate increases with each wave
+        float spawnRateMultiplier = 0.8f; // Rate at which the spawn rate increases with each wave
 
         while (true)
         {

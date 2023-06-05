@@ -143,5 +143,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e76f9680c4a6a984a8f26ad5eedf7bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRangeIncreaseAmount: 10
-  duration: 10
+  attackRangeIncreaseAmount: 20
+  duration: 2

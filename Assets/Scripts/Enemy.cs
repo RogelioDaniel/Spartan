@@ -8,18 +8,20 @@ public class Enemy : MonoBehaviour
     public float speed = 2f;
     public Transform target;
     public SpriteRenderer enemySprite;
-    public string restartSceneName = "Game";
+    public string restartSceneName = "Principal";
     public float fadeDuration = 1.5f;
     public GameObject itemPrefab;
+    public GameObject explosionEffectPrefab; 
+    private int enemyCount = 0;
+    public int enemiesPerItemDrop = 10; // Number of enemies to destroy before dropping an item
 
-    public GameObject destroyEffectPrefab; //
-    public float attackRangeItemDropRate = 100f;
     private Rigidbody2D rb;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
+        enemyCount++;
     }
 
     private void Update()
@@ -37,17 +39,17 @@ public class Enemy : MonoBehaviour
     public void DestroyEnemy()
     {
         // Instantiate the destroy effect at the enemy's position
-        GameObject destroyEffect = Instantiate(destroyEffectPrefab, transform.position, Quaternion.identity);
+        GameObject destroyEffect = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
 
-        // Check if the enemy should drop an item
-        if (Random.value <= attackRangeItemDropRate)
+        // Decrease the enemy count
+        enemyCount++;
+
+        // Check if the enemy count is divisible by the enemiesPerItemDrop
+        if (enemyCount % enemiesPerItemDrop == 0)
         {
-            SpawnAttackRangeItem();
+            print("entrada if" + enemyCount);
+            SpawnItem();
         }
-
-        // Instantiate the item prefab
-        Instantiate(itemPrefab, transform.position, Quaternion.identity);
-
 
         // Destroy the enemy game object
         Destroy(gameObject);
@@ -61,9 +63,7 @@ public class Enemy : MonoBehaviour
         SceneManager.LoadScene(restartSceneName);
     }
 
-
-
-    private void SpawnAttackRangeItem()
+    private void SpawnItem()
     {
         Vector3 spawnPosition = transform.position;
         Instantiate(itemPrefab, spawnPosition, Quaternion.identity);

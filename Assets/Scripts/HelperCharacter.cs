@@ -25,13 +25,13 @@ public class HelperCharacter : MonoBehaviour
     private float originalAttackRange;
     private Coroutine attackRangeCoroutine;
 
-    public float barrierDistance = 2f; // Distance between the player and the Helper Character while forming the barrier
+    public float barrierDistance = 1f; // Distance between the player and the Helper Character while forming the barrier
 
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         currentLife = maxLife;
-        StartCoroutine(AutoAttack());   
+        StartCoroutine(AutoAttack());
     }
 
     void Update()
@@ -41,18 +41,58 @@ public class HelperCharacter : MonoBehaviour
             // HelperCharacter life has run out, destroy it
             DestroyHelperCharacter();
         }
-        
+
         if (targetPlayer != null)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
 
+            if (distanceToPlayer > barrierDistance)
+            {
+                // Move towards the player
+                transform.position = Vector3.MoveTowards(transform.position, targetPlayer.position, movementSpeed * Time.deltaTime);
+            }
+            else
+            {
+                MoveTowardsEnemy();
+                MoveTowardsNearestEnemy();
+                // Stop moving
+                // You can also perform other actions here, such as forming the barrier
+                // ...
+
+                // Detect nearby enemies
+                GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+                if (enemies.Length > 0)
+                {
+                    GameObject nearestEnemy = null;
+                    float shortestDistance = Mathf.Infinity;
+
+                    foreach (GameObject enemy in enemies)
+                    {
+                        float distance = Vector3.Distance(transform.position, enemy.transform.position);
+
+                        if (distance < shortestDistance)
+                        {
+                            shortestDistance = distance;
+                            nearestEnemy = enemy;
+                        }
+                    }
+
+                    if (nearestEnemy != null)
+                    {
+                        // Move towards the nearest enemy
+                        Vector3 enemyDirection = nearestEnemy.transform.position - transform.position;
+                        transform.position = Vector3.MoveTowards(transform.position, nearestEnemy.transform.position, movementSpeed * Time.deltaTime);
+                        transform.rotation = Quaternion.LookRotation(Vector3.forward, enemyDirection);
+                    }
+                }
+            }
 
 
-            // Look towards the direction of the joystick
-            MoveTowardsEnemy();
-            MoveTowardsNearestEnemy();
         }
     }
+
+
 
     public void IncreaseAttackRange(float amount, float duration)
     {
@@ -154,18 +194,20 @@ public class HelperCharacter : MonoBehaviour
         }
     }
 
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Vector2 collisionDirection = collision.transform.position - transform.position;
             Vector2 forward = transform.up;
-
+        
             float angle = Vector2.Angle(forward, collisionDirection);
 
             if (angle > 90f) // Only take damage if hit from behind (greater than 90 degrees)
             {
                 TakeDamage();
+
             }
         }
     }
@@ -210,4 +252,5 @@ public class HelperCharacter : MonoBehaviour
     {
         targetPlayer = playerTransform;
     }
+
 }
