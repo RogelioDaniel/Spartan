@@ -5,32 +5,29 @@ public class AttackRangeItem : MonoBehaviour
 {
     public float attackRangeIncreaseAmount = 1.0f;
     public float duration = 10.0f;
+    public GameObject helperCharacterPrefab;
+    public int numberOfHelpersToSpawn = 10;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            Player player = collision.GetComponent<Player>();
-            if (player != null)
+            // Spawn helper characters
+            for (int i = 0; i < numberOfHelpersToSpawn; i++)
             {
-                // Increase attack range
-                player.IncreaseAttackRange(attackRangeIncreaseAmount, duration);
-
-                // Destroy the item
-                Destroy(gameObject);
+                SpawnHelperCharacter();
             }
-        }
-        else if (collision.CompareTag("HelperCharacter"))
-        {
-            HelperCharacter helperCharacter = collision.GetComponent<HelperCharacter>();
-            if (helperCharacter != null)
-            {
-                // Increase attack range
-                helperCharacter.IncreaseAttackRange(attackRangeIncreaseAmount, duration);
 
-                // Destroy the item
-                Destroy(gameObject);
-            }
+            // Destroy the item
+            Destroy(gameObject);
         }
+    }
+
+    private void SpawnHelperCharacter()
+    {
+        // Instantiate a new helper character at a random position
+        Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 2f; // Adjust the spawn radius as needed
+        Instantiate(helperCharacterPrefab, spawnPosition, Quaternion.identity);
+
     }
 }

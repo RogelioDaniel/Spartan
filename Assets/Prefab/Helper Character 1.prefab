@@ -184,4 +184,4 @@ MonoBehaviour:
   spawnRadius: 1
   spawnCount: 2
   maxLife: 20
-  barrierDistance: 5
+  barrierDistance: 3

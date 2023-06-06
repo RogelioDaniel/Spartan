@@ -32,6 +32,8 @@ public class HelperCharacter : MonoBehaviour
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         currentLife = maxLife;
         StartCoroutine(AutoAttack());
+        MoveTowardsEnemy();
+        MoveTowardsNearestEnemy();
     }
 
     void Update()

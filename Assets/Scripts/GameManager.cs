@@ -22,9 +22,11 @@ public class GameManager : MonoBehaviour
     private int waveNumber = 1;
     public Text waveText;
     private List<HelperCharacter> helperCharacters = new List<HelperCharacter>();
-
+    public int maxEnemyCount = 10; // Maximum number of enemies allowed
+    public float spawnDelay = 1.0f; // Delay between enemy spawns
+    private int currentEnemyCount = 0; // Current number of enemies spawned
     private int enemiesDestroyed = 0;
-    public int enemiesPerItem = 100; // Number of enemies to destroy before spawning an item
+    public int enemiesPerItem ; // Number of enemies to destroy before spawning an item
 
     void Awake()
     {
@@ -54,10 +56,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     private void SpawnEnemy()
     {
+        if (currentEnemyCount >= maxEnemyCount)
+        {
+            return; // Stop spawning if the maximum enemy count is reached
+        }
+
         Vector3 spawnPos = GetRandomSpawnPosition();
         Instantiate(enemy, spawnPos, Quaternion.identity);
+
+        currentEnemyCount++;
+        DecreaseEnemyCount();
+    }
+
+    public void DecreaseEnemyCount()
+    {
+        currentEnemyCount--;
     }
 
     private Vector3 GetRandomSpawnPosition()
@@ -139,9 +155,9 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator SpawnWave()
     {
-        int initialEnemiesToSpawn = 2; // Number of enemies to spawn in the first wave
+        int initialEnemiesToSpawn = 10; // Number of enemies to spawn in the first wave
         int enemiesToSpawn = initialEnemiesToSpawn;
-        float spawnRateMultiplier = 0.8f; // Rate at which the spawn rate increases with each wave
+        float spawnRateMultiplier = 7.8f; // Rate at which the spawn rate increases with each wave
 
         while (true)
         {
@@ -156,7 +172,9 @@ public class GameManager : MonoBehaviour
                 GameObject newEnemy = Instantiate(enemy, spawnPos, Quaternion.identity);
                 newEnemy.SetActive(true);
 
-                yield return new WaitForSeconds(currentSpawnRate);
+                currentEnemyCount++; // Increase the enemy count
+
+                yield return new WaitForSeconds(spawnDelay);
             }
 
             waveNumber++;
