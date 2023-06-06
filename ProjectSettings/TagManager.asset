@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - HelperCharacter
   - Item
+  - Foreground
   layers:
   - Default
   - TransparentFX

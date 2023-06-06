@@ -185,3 +185,4 @@ MonoBehaviour:
   spawnCount: 2
   maxLife: 20
   barrierDistance: 3
+  lifeBarPrefab: {fileID: 5081721398859570772, guid: 9660cf5f6bc32cf44b8d5e7682a2f0b2, type: 3}

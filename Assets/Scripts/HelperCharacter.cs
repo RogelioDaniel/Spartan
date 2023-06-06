@@ -27,6 +27,10 @@ public class HelperCharacter : MonoBehaviour
 
     public float barrierDistance = 1f; // Distance between the player and the Helper Character while forming the barrier
 
+    // Genetic Algorithm Parameters
+    private int chromosomeLength = 10; // Length of the movement behavior chromosome
+    private string movementBehavior; // Movement behavior chromosome
+
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -34,6 +38,7 @@ public class HelperCharacter : MonoBehaviour
         StartCoroutine(AutoAttack());
         MoveTowardsEnemy();
         MoveTowardsNearestEnemy();
+        InitializeMovementBehavior();
     }
 
     void Update()
@@ -55,11 +60,8 @@ public class HelperCharacter : MonoBehaviour
             }
             else
             {
-                MoveTowardsEnemy();
-                MoveTowardsNearestEnemy();
-                // Stop moving
-                // You can also perform other actions here, such as forming the barrier
-                // ...
+                // Execute the movement behavior
+                ExecuteMovementBehavior();
 
                 // Detect nearby enemies
                 GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -89,12 +91,56 @@ public class HelperCharacter : MonoBehaviour
                     }
                 }
             }
-
-
         }
     }
 
+    private void InitializeMovementBehavior()
+    {
+        movementBehavior = GetMovementBehaviorChromosome();
+    }
 
+    private void ExecuteMovementBehavior()
+    {
+        int frameIndex = Mathf.FloorToInt(Time.time * 10); // Change movement behavior every 0.1 seconds
+
+        if (frameIndex >= movementBehavior.Length)
+        {
+            // Regenerate the movement behavior chromosome if it exceeds the length
+            movementBehavior = GenerateRandomChromosome();
+        }
+        else
+        {
+            // Get the action at the current frame index
+            int action = int.Parse(movementBehavior[frameIndex].ToString());
+
+            if (action == 1)
+            {
+                // Perform the movement action
+                MoveTowardsEnemy();
+            }
+        }
+    }
+
+    private string GetMovementBehaviorChromosome()
+    {
+        // Retrieve the movement behavior chromosome for this HelperCharacter
+        // You can implement your own logic to get the chromosome, such as from a database or file
+        // For simplicity, this example generates a random chromosome
+        return GenerateRandomChromosome();
+    }
+
+    private string GenerateRandomChromosome()
+    {
+        // Generate a random movement behavior chromosome
+        string chromosome = "";
+
+        for (int i = 0; i < chromosomeLength; i++)
+        {
+            chromosome += Random.Range(0, 2).ToString();
+        }
+
+        return chromosome;
+    }
 
     public void IncreaseAttackRange(float amount, float duration)
     {
@@ -196,14 +242,13 @@ public class HelperCharacter : MonoBehaviour
         }
     }
 
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Vector2 collisionDirection = collision.transform.position - transform.position;
             Vector2 forward = transform.up;
-        
+
             float angle = Vector2.Angle(forward, collisionDirection);
 
             if (angle > 90f) // Only take damage if hit from behind (greater than 90 degrees)
@@ -254,5 +299,4 @@ public class HelperCharacter : MonoBehaviour
     {
         targetPlayer = playerTransform;
     }
-
 }

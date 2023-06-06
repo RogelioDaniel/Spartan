@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     private int currentEnemyCount = 0; // Current number of enemies spawned
     private int enemiesDestroyed = 0;
     public int enemiesPerItem ; // Number of enemies to destroy before spawning an item
-
+    public Text startText;
     void Awake()
     {
         if (Instance == null)
@@ -51,11 +51,18 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !gameStarted)
         {
-            StartSpawning();
-            gameStarted = true;
+            StartGame();
         }
     }
 
+    public void StartGame()
+    {
+        gameStarted = true;
+        startText.gameObject.SetActive(false); // Hide the start text
+
+        StartCoroutine(SpawnWave());
+        Invoke("SpawnHelperCharacters", 0.1f); // Invoke the method to spawn HelperCharacters after a delay
+    }
 
     private void SpawnEnemy()
     {
