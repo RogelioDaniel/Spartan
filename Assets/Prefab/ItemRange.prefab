@@ -146,4 +146,6 @@ MonoBehaviour:
   attackRangeIncreaseAmount: 20
   duration: 2
   helperCharacterPrefab: {fileID: 4020143835120518915, guid: c218ddf62282bcb4292f191e4fec62ef, type: 3}
-  numberOfHelpersToSpawn: 10
+  numberOfHelpersToSpawn: 1
+  playerLifeIncreaseAmount: 5
+  maxX: 5

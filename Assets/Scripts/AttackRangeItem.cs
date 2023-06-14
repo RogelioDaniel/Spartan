@@ -1,21 +1,33 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackRangeItem : MonoBehaviour
 {
-    public float attackRangeIncreaseAmount = 1.0f;
-    public float duration = 10.0f;
+    public float attackRangeIncreaseAmount ;
+    public float duration ;
     public GameObject helperCharacterPrefab;
-    public int numberOfHelpersToSpawn = 10;
-
+    public int numberOfHelpersToSpawn ;
+    public int playerLifeIncreaseAmount; // Amount to increase the player's life
+    private List<HelperCharacter> helperCharacters = new List<HelperCharacter>();
+    private GameObject player;
+    public float maxX;
     private void OnTriggerEnter2D(Collider2D collision)
+        
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            // Increase player's life
+            Player player = collision.gameObject.GetComponent<Player>();
+            if (player != null)
+            {
+                player.IncreaseLife(playerLifeIncreaseAmount);
+            }
+
             // Spawn helper characters
             for (int i = 0; i < numberOfHelpersToSpawn; i++)
             {
-                SpawnHelperCharacter();
+                SpawnHelperCharacters();
             }
 
             // Destroy the item
@@ -23,11 +35,31 @@ public class AttackRangeItem : MonoBehaviour
         }
     }
 
-    private void SpawnHelperCharacter()
+  
+    void Start()
     {
-        // Instantiate a new helper character at a random position
-        Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 2f; // Adjust the spawn radius as needed
-        Instantiate(helperCharacterPrefab, spawnPosition, Quaternion.identity);
+        player = GameObject.FindGameObjectWithTag("Player");
+       
+    }
 
+    private void SpawnHelperCharacters()
+    {
+        Vector3 centerPosition = new Vector3(0f, 0f, 0f);
+
+        for (int i = 0; i < numberOfHelpersToSpawn; i++)
+        {
+            float angle = i * (360f / numberOfHelpersToSpawn);
+            Vector3 spawnPosition = centerPosition + Quaternion.Euler(0f, 0f, angle) * Vector3.up * maxX;
+
+            GameObject helperCharacterObject = Instantiate(helperCharacterPrefab, spawnPosition, Quaternion.identity);
+            HelperCharacter helperCharacterComponent = helperCharacterObject.GetComponent<HelperCharacter>();
+            helperCharacterComponent.SetTargetPlayer(player.transform);
+            helperCharacters.Add(helperCharacterComponent);
+        }
+    }
+
+    void Update()
+    {
+         
     }
 }

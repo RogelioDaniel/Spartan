@@ -111,11 +111,11 @@ public class Enemy : MonoBehaviour
         if (enemyCount % enemiesPerItemDrop == 0)
         {
             print("entrada if" + enemyCount);
-            SpawnItem();
+            SpawnItem(transform.position); // Pass the position of the enemy's death
         }
 
         // Destroy the enemy game object
-        Destroy(gameObject);
+        gameObject.SetActive(false);
 
         // Destroy the destroy effect prefab after a delay
         Destroy(destroyEffect, 0.5f);
@@ -126,9 +126,10 @@ public class Enemy : MonoBehaviour
         SceneManager.LoadScene(restartSceneName);
     }
 
-    private void SpawnItem()
+    private void SpawnItem(Vector3 spawnPosition)
     {
-        Vector3 spawnPosition = transform.position;
         Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
     }
+
+
 }

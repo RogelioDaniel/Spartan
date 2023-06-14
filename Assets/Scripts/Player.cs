@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int maxLife = 300;
+    public int maxLife ;
     private int currentLife;
-    public float speed = 5f;
-    public float attackRange = 1.5f;
+    public float speed ;
+    public float attackRange;
     private int scoreToAdd = 100;
     public LayerMask enemyLayer;
     public JoystickController joystickController;
@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        currentLife = 100;
+        currentLife = maxLife;
         StartCoroutine(AutoAttack());
 
     }
@@ -214,4 +214,12 @@ public class Player : MonoBehaviour
         
 
     }
+
+    public void IncreaseLife(int amount)
+    {
+        currentLife += amount;
+        // Perform any necessary actions when the player's life increases
+        // For example, update a UI element or play a sound effect
+    }
+
 }

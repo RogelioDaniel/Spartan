@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class HelperCharacter : MonoBehaviour
 {
-    public float movementSpeed = 2f;
-    public float attackRange = 1.5f;
-    public float attackCooldown = 1f;
+    public float movementSpeed ;
+    public float attackRange ;
+    public float attackCooldown;
     public LayerMask playerLayer;
     public LayerMask enemyLayer;
     public GameObject explosionEffectPrefab;
 
-    public float spawnRadius = 5f;
-    public int spawnCount = 6;
+    public float spawnRadius ;
+    public int spawnCount ;
     private Transform targetPlayer;
 
-    public int maxLife = 10;
+    public int maxLife ;
     private int currentLife;
 
     private Transform playerTransform;
@@ -25,7 +25,7 @@ public class HelperCharacter : MonoBehaviour
     private float originalAttackRange;
     private Coroutine attackRangeCoroutine;
 
-    public float barrierDistance = 1f; // Distance between the player and the Helper Character while forming the barrier
+    public float barrierDistance ; // Distance between the player and the Helper Character while forming the barrier
 
     // Genetic Algorithm Parameters
     private int chromosomeLength = 10; // Length of the movement behavior chromosome
@@ -36,10 +36,10 @@ public class HelperCharacter : MonoBehaviour
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         currentLife = maxLife;
         StartCoroutine(AutoAttack());
-        MoveTowardsEnemy();
-        MoveTowardsNearestEnemy();
+
         InitializeMovementBehavior();
     }
+
 
     void Update()
     {
@@ -227,7 +227,7 @@ public class HelperCharacter : MonoBehaviour
 
             float angle = Vector2.Angle(forward, direction);
 
-            if (angle < 90f) // Only attack if enemy is in front (within 90 degrees)
+            if (angle < 180f) // Only attack if enemy is in front (within 90 degrees)
             {
                 Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
                 foreach (Collider2D enemyCollider in hitEnemies)
