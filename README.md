@@ -1,6 +1,6 @@
 # Spartan
 Game with Unity
-I want to develop a game about the Spartan Wars, insipired by 300 movie and game.
+I've been developing a game about the Spartan Wars, insipired by 300 movie and game.
 
 *Player animated, system life and generated HelperCharacters when collider with Item 
 *Ënemy follow Player
